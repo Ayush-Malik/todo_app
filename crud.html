@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+		crossorigin="anonymous">
+	<title>TODO App</title>
+</head>
+
+
+<body style="background-color: rgba(55, 54, 54, 0.732);">
+	<main>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" href="#">TODO App</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+				aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="#">Home <span
+								class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">GitHub</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">LinkedIn</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="container mt-5">
+			<div class="input-group mb-3">
+				<input type="text" id="input_001" class="form-control" placeholder="Add TODO here"
+					aria-label="Recipient's username" aria-describedby="basic-addon2">
+				<div class="input-group-append">
+					<button id="add" class="btn btn-success" type="button">Add</button>
+				</div>
+			</div>
+			<div class="input-group mb-3">
+				<input type="text" id="search_001" class="form-control" placeholder="Search here"
+					aria-label="Recipient's username" aria-describedby="basic-addon2">
+				<div class="input-group-append">
+					<button id="search_001b" class="btn btn-primary" type="button">Search</button>
+				</div>
+				<div class="input-group-append">
+					<button id="reset_001" class="btn btn-danger" type="button">Reset</button>
+				</div>
+			</div>
+			<div class="input-group mb-3" style="display: none;">
+				<input type="text" id="update_001" class="form-control" placeholder="" value="cool"
+					aria-label="Recipient's username" aria-describedby="basic-addon2">
+				<div class="input-group-append">
+					<button id="update" class="btn btn-danger" type="button">Update</button>
+				</div>
+			</div>
+			<h1 style="text-align: center;">
+				TODOS
+			</h1>
+			<div class="container"
+				style="display: flex; justify-content: center; align-items: center; width: 100%;">
+				<ul class="list-group" id="parent_lis">
+					<!-- <div class="btn-group row-12">
+						<li class="list-group-item col-8 mr-2" style="border-radius: 8px;">Cras
+							justo odio
+						</li>
+						<button class="bt btn-danger col-3 mr-2" id="0"
+							style="border-radius: 8px;"> Delete Me </button>
+						<button class="bt btn-warning col-2" id="0" style="border-radius: 8px;">
+							Edit Me </button>
+					</div> -->
+				</ul>
+			</div>
+		</div>
+	</main>
+
+	<script>
+		let update = document.getElementById('update_001').parentNode;
+		let input = document.getElementById('input_001').parentNode;
+		let input_field = document.getElementById('input_001');
+		let parent_lis = document.getElementById('parent_lis');
+		let id = 0;
+		let button = document.getElementById('add');
+		let update_btn = document.getElementById('update');
+		update_btn.addEventListener('click', update_todo);
+		button.addEventListener('click', add_todo);
+
+		let p;
+
+		let search_button = document.getElementById('search_001b');
+		let reset_button = document.getElementById('reset_001');
+		search_button.addEventListener('click', search);
+		reset_button.addEventListener('click', reset);
+
+
+
+		function add_todo(e) {
+			let new_div = document.createElement('div');
+			new_div.classList = "btn-group row-12";
+
+			let new_li = document.createElement('li');
+			new_li.classList = "list-group-item col-8 mr-2";
+			new_li.textContent = input_field.value;
+			new_li.style.borderRadius = "8px";
+
+			if (new_li.textContent.length == 0)
+				return;
+
+
+			let new_button = document.createElement('button');
+			new_button.textContent = "Delete Me";
+			new_button.classList = "btn-danger col-3 mr-2";
+			new_button.addEventListener('click', delete_todo);
+			new_button.style.borderRadius = "8px";
+
+			let edit_button = document.createElement('button');
+			edit_button.textContent = "Edit Me";
+			edit_button.classList = "btn-warning col-3";
+			edit_button.addEventListener('click', edit_todo);
+			edit_button.style.borderRadius = "8px";
+
+			new_div.appendChild(new_li);
+			new_div.appendChild(new_button);
+			new_div.appendChild(edit_button);
+			new_div.style.marginBottom = "10px";
+
+			parent_lis.appendChild(new_div);
+		}
+		function delete_todo(e) {
+			let parent = e.currentTarget.parentNode;
+			parent.remove();
+		}
+		function edit_todo(e) {
+			let curr = e.currentTarget;
+			let parent = curr.parentNode;
+			p = parent;
+			input.style.display = 'none';
+			update.style.display = 'flex';
+			update.childNodes[1].value = parent.childNodes[0].textContent;
+		}
+		function update_todo(e) {
+			let parent = p;
+			input.style.display = 'flex';
+			update.style.display = 'none';
+			parent.childNodes[0].textContent = update.childNodes[1].value;
+		}
+
+		function search(e) {
+			let word = document.getElementById('search_001').value;
+
+			if (word.length == 0)
+				return;
+
+			for (let i = 0; i < parent_lis.childNodes.length; ++i) {
+				if (i >= 3) {
+					let todo = parent_lis.childNodes[i];
+					let txt = todo.childNodes[0].textContent;
+					if (!txt.includes(word))
+						todo.style.display = 'none';
+
+				}
+			}
+		}
+		function reset(e) {
+
+			for (let i = 0; i < parent_lis.childNodes.length; ++i) {
+				if (i >= 3) {
+					let todo = parent_lis.childNodes[i];
+					todo.style.display = 'flex';
+
+				}
+			}
+		}
+
+	</script>
+</body>
+
+</html>
